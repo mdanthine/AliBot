@@ -3,9 +3,9 @@ const { description, permissionsRequired, botPermissions } = require('./addServe
 const createLog = require('../../utils/createLog');
 
 module.exports = {
+    testOnly: true,
     name: "openticket",
     description: "Opens a ticket channel for presenting your Discord server.",
-    testOnly: true,
     options: [
         {
             name: 'invite',
@@ -38,7 +38,6 @@ module.exports = {
         const { guild, user } = interaction;
 
         const existingTicket = guild.channels.cache.find(channel => channel.name === `ticket-${user.username}`);
-        console.log(user.username)
         if (existingTicket) {
             interaction.reply({
                 content: "You already have an open ticket.",
