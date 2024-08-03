@@ -1,11 +1,9 @@
-const { ApplicationCommandOptionType } = require("discord.js")
-const { description, callback } = require("../discordhub/addServer")
-
-const convertToDiscordTimestamp = require("../../utils/convertToDiscordTimestamp")
+const { ApplicationCommandOptionType } = require("discord.js");
+const convertToDiscordTimestamp = require("../../utils/convertToDiscordTimestamp");
 const capitalizeWords = require("../../utils/capitalizeWords");
 const fetchApi = require("../../utils/fetchApi");
 
-const apiKey = process.env.HYPIXEL_API
+const apiKey = process.env.HYPIXEL_API;
 
 module.exports = {
     name: "status",
@@ -16,45 +14,45 @@ module.exports = {
             description: "Player name",
             type: ApplicationCommandOptionType.String,
             required: true,
-        }
+        },
     ],
 
     callback: async (client, interaction) => {
         const playerName = interaction.options.getString("player");
 
         try {
-            const mojangData = await fetchApi(`https://api.mojang.com/users/profiles/minecraft/${playerName}`)
-            const uuid = mojangData.id;
-            if (!mojangData.id) {
-                interaction.reply({
+            const mojangData = await fetchApi(`https://api.mojang.com/users/profiles/minecraft/${playerName}`);
+            const { id: uuid } = mojangData || {};
+            if (!uuid) {
+                return interaction.reply({
                     content: `Couldn't find any player with the name ${playerName}`,
                     ephemeral: true,
-                })
-                return;
+                });
             }
 
-            const statusData = await fetchApi(`https://api.hypixel.net/v2/status?key=${apiKey}&uuid=${uuid}`);
-            const playerData = await fetchApi(`https://api.hypixel.net/v2/player?key=${apiKey}&uuid=${uuid}`);
-            const online = statusData.session.online;
-            const gametype = statusData.session.gameType;
-            const gamemode = statusData.session.mode;
-            const lastPlayed = playerData.player.mostRecentGameType;
-            const lastLogin = playerData.player.lastLogin;
-            const timePlayed = convertToDiscordTimestamp(lastLogin, "R");
-            
+            const [statusData, playerData] = await Promise.all([
+                fetchApi(`https://api.hypixel.net/v2/status?key=${apiKey}&uuid=${uuid}`),
+                fetchApi(`https://api.hypixel.net/v2/player?key=${apiKey}&uuid=${uuid}`),
+            ]);
 
-            let statusMessage = `${statusData.session.online ? "🟢" : "🔴"} ${playerName}`;
+            const online = statusData?.session?.online;
+            const gametype = capitalizeWords(statusData?.session?.gameType || "");
+            const gamemode = capitalizeWords((statusData?.session?.mode || "").replace("_", " "));
+            const lastPlayed = capitalizeWords(playerData?.player?.mostRecentGameType || "");
+            const lastLogin = playerData?.player?.lastLogin;
+            const timePlayed = convertToDiscordTimestamp(lastLogin, "R");
+
+            let statusMessage = `${online ? "🟢" : "🔴"} ${playerName}`;
             if (online) {
-                statusMessage += `\nPlaying ${capitalizeWords(gametype ? statusData.session.gameType : "")} | ${gamemode ? capitalizeWords(gamemode.replace("_"," ")) : ""}`
-                statusMessage += `\nSince: ${timePlayed}`;
+                statusMessage += `\nPlaying ${gametype} | ${gamemode}\nSince: ${timePlayed}`;
             } else {
                 statusMessage += `\nLast login: ${timePlayed}`;
                 if (lastPlayed) {
-                    statusMessage += `\nLast gamemode: ${capitalizeWords(lastPlayed)}`;
+                    statusMessage += `\nLast gamemode: ${lastPlayed}`;
                 }
             }
 
-            interaction.reply({ content: statusMessage })
+            interaction.reply({ content: statusMessage });
 
         } catch (error) {
             console.error(`Error fetching player data:`, error);
@@ -63,6 +61,5 @@ module.exports = {
                 ephemeral: true,
             });
         }
-
     }
-}
+};

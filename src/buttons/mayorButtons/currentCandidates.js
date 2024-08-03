@@ -1,0 +1,49 @@
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js");
+const removeFormat = require("../../utils/removeFormat");
+const fetchApi = require("../../utils/fetchApi");
+
+module.exports = {
+    id: "current-candidates-list",
+    callback: async (client, interaction) => {
+        let mayorData = client.cachedMayorData;
+        if (!mayorData) {
+            mayorData = await fetchApi(`https://api.hypixel.net/v2/resources/skyblock/election?key=${apiKey}`);
+        }        
+        const currentElection = mayorData.current;
+        const year = currentElection.year;
+        const candidates = currentElection.candidates;
+
+        let embedDescription = "";
+        candidates.forEach(candidate => {
+            embedDescription += `\n**${candidate.name}**: ${candidate.votes} Votes\n`
+            candidate.perks.forEach(perk => {
+                embedDescription += `__${perk.name}__: ${removeFormat(perk.description)}\n`
+            })
+        });
+
+        const embed = new EmbedBuilder()
+            .setTitle(`Last year candidates list (Year ${year})`)
+            .setDescription(embedDescription)
+        
+        const currentMayorButton = new ButtonBuilder()
+            .setCustomId('current-mayor')
+            .setLabel('Current Mayor')
+            .setStyle(ButtonStyle.Primary)
+        
+        const currentElectionButton = new ButtonBuilder()
+            .setCustomId('current-election-chart')
+            .setLabel('Current Election Chart')
+            .setStyle(ButtonStyle.Primary)
+
+        const lastElectionButton = new ButtonBuilder()
+            .setCustomId('last-election-chart')
+            .setLabel('Last Election Chart')
+            .setStyle(ButtonStyle.Primary)
+        
+        const row = new ActionRowBuilder().addComponents(currentMayorButton, lastElectionButton, currentElectionButton);
+        interaction.update({
+            embeds: [embed],
+            components: [row]
+        })
+    }
+}

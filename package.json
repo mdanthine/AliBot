@@ -11,10 +11,14 @@
   "description": "",
   "dependencies": {
     "axios": "^1.7.2",
+    "canvas": "^2.11.2",
+    "chart": "^0.1.2",
+    "chart.js": "^4.4.3",
     "cors": "^2.8.5",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "quickchart-js": "^3.1.3"
   }
 }

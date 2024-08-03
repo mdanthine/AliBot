@@ -1,6 +1,7 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits, ChannelType, PermissionOverwrites, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 const { description, permissionsRequired, botPermissions } = require('./addServer');
 const createLog = require('../../utils/createLog');
+const fetchApi = require('../../utils/fetchApi');
 
 module.exports = {
     testOnly: true,
@@ -79,14 +80,12 @@ module.exports = {
                 .setLabel('Lock Ticket')
                 .setStyle(ButtonStyle.Primary)
 
-            const row = new ActionRowBuilder()
-                .addComponents(deleteButton, lockButton);
+            const row = new ActionRowBuilder().addComponents(deleteButton, lockButton);
 
 
             
             const inviteCode = invite.split('/').pop();
-            const response = await fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`);
-            const data = await response.json();
+            const data = await fetchApi(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`)
             
             const discordName = data.guild.name;
             const discordId = data.guild.id;
