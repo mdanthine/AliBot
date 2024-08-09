@@ -1,12 +1,11 @@
 const { devs, testServer } = require('../../../config.json');
-const getLocalCommands = require('../../utils/getLocalCommands');
+const getLocalInteractions = require('../../utils/getLocalInteractions');
 
 module.exports = async (client, interaction) => {
     if (!interaction.isChatInputCommand()) return;
-    const localCommands = getLocalCommands();
+    const localCommands = getLocalInteractions('commands');
 
     try {
-        console.log(localCommands);
         const commandObject = localCommands.find(
         (cmd) => cmd.name === interaction.commandName
         );

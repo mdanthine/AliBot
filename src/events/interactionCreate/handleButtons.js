@@ -1,10 +1,10 @@
 const fs = require('fs');
-const getLocalButtons = require('../../utils/getLocalButtons');
+const getLocalInteractions = require('../../utils/getLocalInteractions');
 
 module.exports = async (client, interaction) => {
     if (!interaction.isButton()) return;
     const { customId , channel, user, guild } = interaction;
-    const buttons = getLocalButtons();
+    const buttons = getLocalInteractions('buttons');
 
     try {
         const buttonObject = buttons.find((btn) => btn.id === customId)

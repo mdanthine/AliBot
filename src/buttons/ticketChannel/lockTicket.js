@@ -47,7 +47,8 @@ module.exports = {
                 ephemeral: true,
                 components: [row],
             });
-            createLog(`Ticket unlocked by [${user.globalName}] = [${user.id}] in ${channel.name}`, interaction);
+            createLog(`Ticket Locking`, 'Ticket Unlocked', interaction, 'lock');
+
         } else {
             await channel.permissionOverwrites.set(lockPermissions);
             await interaction.reply({
@@ -55,7 +56,8 @@ module.exports = {
                 ephemeral: true,
                 components: [row],
             });
-            createLog(`Ticket locked by [${user.globalName}] = [${user.id}] in ${channel.name}`, interaction);
+            createLog(`Ticket Locking`, 'Ticket Locked', interaction, 'lock');
+
         }
     }
 }
