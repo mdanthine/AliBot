@@ -1,7 +1,7 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 module.exports = {
-    id: "discordserver-ticket",
+    id: "discord-ticket",
     callback: async (client, interaction) => {
         const { channel, user } = interaction;
 
@@ -29,7 +29,7 @@ module.exports = {
 
         const keyFeaturesInput = new TextInputBuilder()
             .setCustomId('discordKeyFeatures')
-            .setLabel('Key Features (comma-separated)')
+            .setLabel('Key features (comma-separated)')
             .setStyle(TextInputStyle.Short)
             .setRequired(true);
 
@@ -39,7 +39,6 @@ module.exports = {
             new ActionRowBuilder().addComponents(tagsInput),
             new ActionRowBuilder().addComponents(keyFeaturesInput)
         );
-
         await interaction.showModal(modal);
     }
 }

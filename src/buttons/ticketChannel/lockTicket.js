@@ -1,8 +1,7 @@
-const { PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const createLog = require('../../utils/createLog');
+const { ButtonBuilder, ButtonStyle, ActionRowBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
-    id: "lock-ticket",
+    id: 'lock-ticket',
     callback: async (client, interaction) => {
         const { channel, user, guild } = interaction;
 
@@ -16,7 +15,16 @@ module.exports = {
             .setLabel(isLocked ? 'Lock Ticket' : 'Unlock Ticket')
             .setStyle(isLocked ? ButtonStyle.Primary : ButtonStyle.Success);
 
-        const row = new ActionRowBuilder().addComponents(lockButton);
+        const messageComponents = interaction.message.components.map(row => {
+            const actionRow = ActionRowBuilder.from(row);
+            actionRow.components = row.components.map(component => {
+                if (component.customId === 'lock-ticket') {
+                    return lockButton;
+                }
+                return component;
+            });
+            return actionRow;
+        })
 
         const lockPermissions = [
             {
@@ -42,22 +50,19 @@ module.exports = {
 
         if (isLocked) {
             await channel.permissionOverwrites.set(unlockPermissions);
-            await interaction.reply({
-                content: 'Ticket unlocked.',
-                ephemeral: true,
-                components: [row],
+            await interaction.message.edit({
+                components: messageComponents,
             });
-            createLog(`Ticket Locking`, 'Ticket Unlocked', interaction, 'lock');
-
+            await interaction.deferUpdate();
+            await interaction.followUp('The ticket has been unlocked');
         } else {
             await channel.permissionOverwrites.set(lockPermissions);
-            await interaction.reply({
-                content: 'Ticket locked.',
-                ephemeral: true,
-                components: [row],
+            await interaction.message.edit({
+                components: messageComponents,
             });
-            createLog(`Ticket Locking`, 'Ticket Locked', interaction, 'lock');
-
+            await interaction.deferUpdate();
+            await interaction.followUp('The ticket has been locked.');
         }
+
     }
-}
+};

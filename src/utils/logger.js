@@ -18,10 +18,11 @@ function createLogger(client) {
             };
 
             if (!interaction) return
-            logEntry.userId = interaction.user.id;
-            logEntry.userName = interaction.user.tag;
+            logEntry.userId = interaction.user?.id || 'Unknown';
+            logEntry.userName = interaction.user?.tag || 'Unknown';
             logEntry.channelName = interaction.channel ? interaction.channel.name : 'Unknown';
             logEntry.channelId = interaction.channel.id ? interaction.channel.id : '';
+
             if (interaction.isCommand()) {
                 if (level === logLevels.INFO) return;
                 logEntry.logType = 'Command';
@@ -31,7 +32,7 @@ function createLogger(client) {
             } else if (interaction.isModalSubmit()) {
                 logEntry.logType = 'Modal';
             } else {
-                return;
+                logEntry.logType = 'Unknown';
             }
             
 

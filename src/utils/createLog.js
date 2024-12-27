@@ -1,8 +1,9 @@
 const { EmbedBuilder, ChannelType, AttachmentBuilder } = require('discord.js');
-
-module.exports = (title, action, interaction, actionType, filePath = null) => {
+const { ticketLogChannel } = require('../../config.json')
+module.exports = async (title, action, interaction, actionType, filePath = null) => {
     const { user, guild } = interaction;
-    const logChannel = guild.channels.cache.find(ch => ch.name === 'ticket-log' && ch.type === ChannelType.GuildText);
+    const logChannel = await client.channels.fetch(ticketLogChannel);
+
     if (!logChannel) return;
 
     const embed = new EmbedBuilder()
@@ -10,8 +11,8 @@ module.exports = (title, action, interaction, actionType, filePath = null) => {
         .setDescription(action)
         .setColor(getActionColor(actionType))
         .addFields(
-            { name: 'User', value: `${user.tag} (${user.id})`, inline: true },
-            { name: 'Channel', value: interaction.channel ? interaction.channel.name : 'Unknown', inline: true }
+            { name: 'User', value: `<@${user.id}> (${user.tag})`, inline: true },
+            { name: 'Channel', value: interaction.channel ? `<#${interaction.channel.id}> ${interaction.channel.name}` : 'Unknown', inline: true }
         )
         .setTimestamp()
         .setFooter({ text: 'Ticket System Log' });
@@ -32,8 +33,6 @@ function getActionColor(actionType) {
             return 0x00FF00;
         case 'delete':
             return 0xFF0000;
-        case 'lock':
-            return 0xFFFF00;
         case 'info':
             return 0x0000FF;
         default:

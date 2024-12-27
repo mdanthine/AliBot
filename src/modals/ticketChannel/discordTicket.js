@@ -26,24 +26,19 @@ module.exports = {
 
         await channel.send({
             content: 
-`Hello ${user}, please make sure that the following informations about your Discord server are correct:
-• **Name: ${discordName}**
-• **Id: ${discordId}**
-
-• **Invite:** ${invite}
-${discordVanity ? `• **Vanity Link:** ${discordVanity}` : ""}
-
-• **Description**: ${discordDesc}
-
-• **Categories:** ${categories.join(', ')}
-• **Tags:** ${tags.join(', ')}
-• **Key Features:** ${keyFeatures.join(', ')}
-
-Your Discord Server has:
-• Total members: ${totalMembers}
-• Online Members: ${onlineMembers}
-• Nitro Boosts: ${premiumMembers}
-`, 
+                `Hello ${user}, please make sure that the following informations about your Discord server are correct:\n`+
+                `• **Name: ${discordName}**\n` +
+                `• **Id: ${discordId}**\n` +
+                `• **Invite:** ${invite}\n` +
+                `${discordVanity ? `• **Vanity Link:** ${discordVanity}` : ""}\n\n` +
+                `• **Description**: ${discordDesc}\n\n` +
+                `• **Categories:** ${categories.join(', ')}\n` +
+                `• **Tags:** ${tags.join(', ')}\n` +
+                `• **Key Features:** ${keyFeatures.join(', ')}\n\n` +
+                `Your Discord Server has:\n` +
+                `• Total members: ${totalMembers}\n` +
+                `• Online Members: ${onlineMembers}\n` +
+                `• Nitro Boosts: ${premiumMembers}\n`,
         });
 
 
