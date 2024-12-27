@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Client, IntentsBitField } = require('discord.js');
 const eventHandler = require('./handlers/eventHandler');
+const createLogger = require('./utils/logger');
 
 const client = new Client({
   intents: [
@@ -11,6 +12,8 @@ const client = new Client({
   ],
 });
 
-eventHandler(client);
+const logger = createLogger(client);
+
+eventHandler(client, logger);
 
 client.login(process.env.BOT_TOKEN);

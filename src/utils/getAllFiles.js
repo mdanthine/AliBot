@@ -1,22 +1,26 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = (directory, foldersOnly = false) => {
+const getAllFiles = (directory, foldersOnly = false) => {
     let fileNames = [];
 
-    const files = fs.readdirSync(directory, {withFileTypes: true});
+    const files = fs.readdirSync(directory, { withFileTypes: true });
     for (const file of files) {
         const filePath = path.join(directory, file.name);
-        if (foldersOnly) {
-            if (file.isDirectory()) {
+        if (file.isDirectory()) {
+            if (foldersOnly) {
                 fileNames.push(filePath);
+            } else {
+                fileNames = fileNames.concat(getAllFiles(filePath, foldersOnly));
             }
         } else {
-            if (file.isFile()) {
+            if (!foldersOnly) {
                 fileNames.push(filePath);
             }
         }
     }
 
     return fileNames;
-}
+};
+
+module.exports = getAllFiles;

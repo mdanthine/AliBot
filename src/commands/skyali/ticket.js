@@ -21,7 +21,7 @@ module.exports = {
     ],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const { guild, user } = interaction;
         const ticketType = interaction.options.getString('type');
 
