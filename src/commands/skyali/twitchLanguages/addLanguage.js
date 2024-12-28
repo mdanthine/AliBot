@@ -8,19 +8,17 @@ module.exports = {
     description: 'Add a twitch language',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'code',
             description: 'Code of the language (en)',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'name',
             description: 'Name of the language (English)',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -35,6 +33,7 @@ module.exports = {
             logger.info(interaction, 'Language added successfully.', 
                 { Code: code, Name: name });
             await interaction.reply('Language added successfully.');
+            
         } catch (error) {
             logger.error(interaction, 'Error adding language', 
                 { Error: error.message, Code: code, Name: name });

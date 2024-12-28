@@ -1,6 +1,8 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
 const axios = require('axios');
 
+const apiUrl = 'http://backend:5000/api/discord/servers';
+
 async function getDiscordData(inviteUrl) {
     const inviteCode = inviteUrl.split('/').pop();
     const response = await fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`);
@@ -23,38 +25,32 @@ async function getDiscordData(inviteUrl) {
     };
 }
 
-const apiUrl = 'http://backend:5000/api/discord/servers';
-
 module.exports = {
     name: 'addserver',
     description: 'Adds a Discord server to the website.',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'invite',
             description: 'Invite link of the Discord server',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'categories',
             description: 'Categories of the server, separated by commas',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'tags',
             description: 'Tags of the server, separated by commas',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'keyfeatures',
             description: 'Key features of the server, separated by commas',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -82,10 +78,14 @@ module.exports = {
             logger.info(interaction, 'Server added successfully.', 
                 { Server: `\`\`\`${JSON.stringify(newServer, null, 2)}\`\`\``});
             interaction.editReply('Server added to the database successfully!');
+            
         } catch (error) {
             logger.error(interaction, 'Error adding server', 
                 { Error: error.message, Link: invite, Categories: categories, Tags: tags, Features: keyFeatures });
-            interaction.editReply({ content: 'There was an error adding the server. Please try again later.', ephemeral: true });
+            interaction.editReply({ 
+                content: 'There was an error adding the server. Please try again later.', 
+                ephemeral: true 
+            });
         }
     },
 };

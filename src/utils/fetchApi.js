@@ -1,10 +1,8 @@
 module.exports = async (urlApi) => {
     try {
         const response = await fetch(urlApi);
-        if (!response.ok) {
-            throw new Error(`HTTP Error! Status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
+        
         const data = await response.json();
         return data;
 

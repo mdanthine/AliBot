@@ -1,15 +1,12 @@
-const { devs, testServer } = require('../../../config.json');
 const getLocalInteractions = require('../../utils/getLocalInteractions');
+const { devs, testServer } = require('../../../config.json');
 
 module.exports = async (client, interaction, logger) => {
     if (!interaction.isChatInputCommand()) return;
     const localCommands = getLocalInteractions('commands');
 
     try {
-        const commandObject = localCommands.find(
-            (cmd) => cmd.name === interaction.commandName
-        );
-
+        const commandObject = localCommands.find((cmd) => cmd.name === interaction.commandName);
         if (!commandObject) return;
 
         if (commandObject.devOnly) {
@@ -63,6 +60,9 @@ module.exports = async (client, interaction, logger) => {
     } catch (error) {
         console.log(`There was an error running this command: ${error}`);
         logger.error('Error executing command', { error: error.message, command: interaction.commandName });
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        await interaction.reply({ 
+            content: 'There was an error while executing this command!', 
+            ephemeral: true 
+        });
     }
 };

@@ -10,9 +10,8 @@ module.exports = {
 
         try {
             const channelPermissions = await channel.permissionOverwrites.cache;
-            const isLocked = channelPermissions.some(permission =>
-                (permission.id === guild.id && !permission.allow.has(PermissionFlagsBits.SendMessages)));
-
+            const isLocked = channelPermissions.some(permission => (permission.id === guild.id && !permission.allow.has(PermissionFlagsBits.SendMessages)));
+            
             const lockButton = new ButtonBuilder()
                 .setCustomId('lock-ticket')
                 .setLabel(isLocked ? 'Lock Ticket' : 'Unlock Ticket')
@@ -33,7 +32,8 @@ module.exports = {
                 }, {
                     id: user.id,
                     deny: [PermissionFlagsBits.SendMessages],
-                }];
+                }
+            ];
 
             const unlockPermissions = [{
                     id: guild.id,
@@ -41,7 +41,8 @@ module.exports = {
                 }, {
                     id: user.id,
                     allow: [PermissionFlagsBits.SendMessages],
-                }];
+                }
+            ];
 
             if (isLocked) {
                 await channel.permissionOverwrites.set(unlockPermissions);
@@ -57,8 +58,11 @@ module.exports = {
 
         } catch (error) {
             console.error(`Error locking/unlocking ticket: ${error}`);
-            await interaction.reply({ content: 'There was an error processing your request.', ephemeral: true });
-            createLog('Error', `**Error**: ${error.message}`, interaction, 'error');
+            createLog(client, 'Error', `**Error**: ${error.message}`, interaction, 'error');
+            await interaction.reply({ 
+                content: 'There was an error processing your request.', 
+                ephemeral: true 
+            });
 
         }
 

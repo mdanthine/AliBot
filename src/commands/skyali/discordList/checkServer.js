@@ -8,13 +8,12 @@ module.exports = {
     description: 'Check for a discord server',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'id',
             description: 'Server id',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -36,6 +35,7 @@ module.exports = {
                     { ID: serverId });
                 await interaction.reply('Server not found.');
             }
+            
         } catch (error) {
             logger.error(interaction, 'Error fetching server list', 
                 { Error: error.message, ID: serverId });

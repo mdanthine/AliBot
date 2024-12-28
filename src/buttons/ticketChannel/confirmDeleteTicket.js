@@ -22,7 +22,8 @@ module.exports = {
                 const reason = reasonMessage.content;
                 const messages = await channel.messages.fetch({ limit: 100 });
                 const sortedMessages = messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
-                const logText = `Conversation in ${channel.name}:\n\n`;
+                const filePath = path.join(__dirname, `${channel.name}-log.txt`);
+                let logText = `Conversation in ${channel.name}:\n\n`;
 
                 sortedMessages.forEach(msg => {
                     const timestamp = msg.createdAt.toLocaleString('en-GB', {
@@ -32,18 +33,21 @@ module.exports = {
                     logText += `[${timestamp}] ${msg.author.tag}: ${msg.content}\n`;
                 });
 
-                const filePath = path.join(__dirname, `${channel.name}-log.txt`);
                 fs.writeFileSync(filePath, logText);
 
-                createLog('Ticket Deleted', `**Reason**: ${reason}`, interaction, 'delete', filePath);
+                createLog(client, 'Ticket Deleted', `**Reason**: ${reason}`, interaction, 'delete', filePath);
                 await channel.delete();
 
                 fs.unlinkSync(filePath);
             });
+            
         } catch (error) {
             console.error(`Error confirming ticket deletion: ${error}`);
-            await interaction.reply({ content: 'There was an error processing your request.', ephemeral: true });
-            createLog('Error', `**Error**: ${error.message}`, interaction, 'error');
+            createLog(client, 'Error', `**Error**: ${error.message}`, interaction, 'error');
+            await interaction.reply({ 
+                content: 'There was an error processing your request.', 
+                ephemeral: true
+            });
         }
     }
 };

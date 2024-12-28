@@ -8,13 +8,12 @@ module.exports = {
     description: 'Remove a youtube banned word',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'word',
             description: 'Word to be removed',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -24,10 +23,11 @@ module.exports = {
 
         try {
             const response = await axios.delete(`${apiUrl}/${word}`);
-            
+
             logger.info(interaction, 'Word removed successfully.', 
                 { Word: word });
             await interaction.reply('Word removed successfully.');
+            
         } catch (error) {
             logger.error(interaction, 'Error removing word', 
                 { Error: error.message, Word: word });

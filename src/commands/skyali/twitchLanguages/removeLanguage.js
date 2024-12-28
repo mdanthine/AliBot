@@ -8,14 +8,12 @@ module.exports = {
     description: 'Remove a twitch language',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'code',
             description: 'Code of the language (en)',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'name',
             description: 'Name of the language (English)',
             type: ApplicationCommandOptionType.String,
@@ -31,9 +29,11 @@ module.exports = {
 
         try {
             const response = await axios.delete(`${apiUrl}/${code}`);
+
             logger.info(interaction, 'Language removed successfully.', 
                 { Code: code, Name: name });
             await interaction.reply('Language removed successfully.');
+            
         } catch (error) {
             logger.error(interaction, 'Error removing language', 
                 { Error: error.message, Code: code, Name: name}); 

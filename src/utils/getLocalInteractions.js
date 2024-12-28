@@ -4,23 +4,28 @@ const getAllFiles = require('./getAllFiles');
 module.exports = (folder, exceptions = []) => {
   let localInteractions = [];
 
-  const interactionCategories = getAllFiles(
-    path.join(__dirname, '..', folder),
-    true
-  );
+  try {
+    const interactionCategories = getAllFiles(path.join(__dirname, '..', folder), true);
 
-  for (const interactionCategory of interactionCategories) {
-    const interactionFiles = getAllFiles(interactionCategory);
+    for (const interactionCategory of interactionCategories) {
+      const interactionFiles = getAllFiles(interactionCategory);
 
-    for (const interactionFile of interactionFiles) {
-      const interactionObject = require(interactionFile);
+      for (const interactionFile of interactionFiles) {
+        try {
+          const interactionObject = require(interactionFile);
 
-      if (exceptions.includes(interactionObject.name)) {
-        continue;
+          if (exceptions.includes(interactionObject.name)) {
+            continue;
+          }
+
+          localInteractions.push(interactionObject);
+        } catch (error) {
+          console.error(`Error loading interaction file ${interactionFile}: ${error.message}`);
+        }
       }
-
-      localInteractions.push(interactionObject);
     }
+  } catch (error) {
+    console.error(`Error loading interaction categories: ${error.message}`);
   }
 
   return localInteractions;

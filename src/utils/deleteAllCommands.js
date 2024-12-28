@@ -19,6 +19,7 @@ module.exports = async () => {
         }
 
         console.log('All commands have been deleted.');
+        
     } catch (error) {
         console.error('Error deleting commands:', error);
     } finally {

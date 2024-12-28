@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 const axios = require('axios');
 
 const apiUrl = "http://backend:5000/api/twitch-languages";
@@ -19,6 +19,7 @@ module.exports = {
             logger.info(interaction, 'Languages retrieved successfully.', 
                 { Amount: response.data.length });
             await interaction.reply(`**Languages (${response.data.length}):**\n${languages}`);
+            
         } catch (error) {
             logger.error(interaction, 'Error getting languages', 
                 { Error: error.message });

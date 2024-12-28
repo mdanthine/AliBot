@@ -11,17 +11,13 @@ const logLevels = {
 function createLogger(client) {
     async function log(interaction = null, level, message, context = {}) {
         try {
-            const logEntry = {
-                level,
-                message,
-                ...context
-            };
+            const logEntry = {level, message, ...context};
 
             if (!interaction) return
             logEntry.userId = interaction.user?.id || 'Unknown';
             logEntry.userName = interaction.user?.tag || 'Unknown';
             logEntry.channelName = interaction.channel ? interaction.channel.name : 'Unknown';
-            logEntry.channelId = interaction.channel.id ? interaction.channel.id : '';
+            logEntry.channelId = interaction.channel?.id ? interaction.channel.id : '';
 
             if (interaction.isCommand()) {
                 // if (level === logLevels.INFO) return;
@@ -46,13 +42,11 @@ function createLogger(client) {
                     { name: 'Channel', value: `<#${logEntry.channelId}> - ${logEntry.channelName}`, inline: true }
                 )
                 .setTimestamp()
-                .setFooter({ text: 'Alibot log' });
+                .setFooter({ text: 'Alibot Log' });
 
             const channel = await client.channels.fetch(logChannel);
-            if (!channel) {
-                throw new Error('Log channel not found');
-            }
-
+            if (!channel) throw new Error('Log channel not found');
+            
             console.log(`[${level}] ${message}`, context);
             await channel.send({ embeds: [embed] });
         } catch (error) {

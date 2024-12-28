@@ -8,37 +8,32 @@ module.exports = {
     description: 'Update a discord server',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'id',
             description: 'Discord server id',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'link',
             description: 'New server link',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
-        {
+        }, {
             name: 'categories',
             description: 'Categories of the server, separated by commas',
             type: ApplicationCommandOptionType.String,
             required: false,
-        },
-        {
+        }, {
             name: 'tags',
             description: 'Tags of the server, separated by commas',
             type: ApplicationCommandOptionType.String,
             required: false,
-        },
-        {
+        }, {
             name: 'keyfeatures',
             description: 'Key features of the server, separated by commas',
             type: ApplicationCommandOptionType.String,
             required: false,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -72,6 +67,7 @@ module.exports = {
             logger.info(interaction, 'Server updated successfully.', 
                 { ID: discordId, Data: `\`\`\`${JSON.stringify(updateData, null, 2)}\`\`\`` })
             interaction.editReply('Server updated successfully.');
+            
         } catch (error) {
             logger.error(interaction, 'Error updating server', 
                 { Error: error.message, ID: discordId, Data: `\`\`\`${JSON.stringify(updateData, null, 2)}\`\`\``});

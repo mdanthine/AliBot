@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 const axios = require('axios');
 
 const apiUrl = 'http://backend:5000/api/youtube/banned-words';
@@ -19,6 +19,7 @@ module.exports = {
             logger.info(interaction, 'Banned words retrieved successfully.',
                 { Amount: response.data.length });
             await interaction.reply(`Banned words (${words.length}):\n\`\`\`${words.join('\t')}\`\`\``);
+            
         } catch (error) {
             logger.error(interaction, 'Error getting banned words', 
                 { Error: error.message });

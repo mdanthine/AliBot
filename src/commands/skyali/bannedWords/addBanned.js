@@ -8,13 +8,12 @@ module.exports = {
     description: 'Add a youtube banned word',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'word',
             description: 'Word to be banned',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -28,6 +27,7 @@ module.exports = {
             logger.info(interaction, 'Word added successfully.', 
                 { Word: word });
             await interaction.reply('Word added successfully.');
+            
         } catch (error) {
             logger.error(interaction, 'Error adding word', 
                 { Error: error.message, Word: word });

@@ -3,7 +3,7 @@ const createLog = require('../../utils/createLog');
 
 module.exports = {
     id: "support-ticket",
-    
+
     callback: async (client, interaction) => {
         try {
             const modal = new ModalBuilder()
@@ -28,10 +28,14 @@ module.exports = {
             );
 
             await interaction.showModal(modal);
+            
         } catch (error) {
             console.error(`Error showing Support Ticket modal: ${error}`);
-            await interaction.reply({ content: 'There was an error processing your request.', ephemeral: true });
-            createLog('Error', `**Error**: ${error.message}`, interaction, 'error');
+            createLog(client, 'Error', `**Error**: ${error.message}`, interaction, 'error');
+            await interaction.reply({ 
+                content: 'There was an error processing your request.', 
+                ephemeral: true 
+            });
         }
     }
 }

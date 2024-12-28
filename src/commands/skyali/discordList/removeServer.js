@@ -8,13 +8,12 @@ module.exports = {
     description: 'Remove a discord server',
     devOnly: true,
     testOnly: true,
-    options: [
-        {
+    options: [{
             name: 'id',
             description: 'Server id',
             type: ApplicationCommandOptionType.String,
             required: true,
-        },
+        }
     ],
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
@@ -28,6 +27,7 @@ module.exports = {
             logger.info(interaction, 'Server removed successfully.', 
                 { ID: id });
             await interaction.reply('Server removed successfully.');
+            
         } catch (error) {
             logger.error(interaction, 'Error removing server', 
                 { Error: error.message, ID: id });

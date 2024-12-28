@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 const axios = require('axios');
 
 const apiUrl = 'http://backend:5000/api/discord/servers';
@@ -19,6 +19,7 @@ module.exports = {
             logger.info(interaction, 'Servers retrieved successfully.', 
                 { Amount: response.data.length });    
             await interaction.reply(`**Servers (${response.data.length}):** \n${servers.join('')}`);
+            
         } catch (error) {
             logger.error(interaction, 'Error getting servers', 
                 { Error: error.message });

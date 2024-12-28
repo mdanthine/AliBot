@@ -1,7 +1,7 @@
-const { EmbedBuilder, ChannelType, AttachmentBuilder } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { ticketLogChannel } = require('../../config.json');
 
-module.exports = async (title, action, interaction, actionType, filePath = null) => {
+module.exports = async (client, title, action, interaction, actionType, filePath = null) => {
     const { user, guild } = interaction;
     const logChannel = await client.channels.fetch(ticketLogChannel);
     if (!logChannel) return;
@@ -16,6 +16,7 @@ module.exports = async (title, action, interaction, actionType, filePath = null)
         )
         .setTimestamp()
         .setFooter({ text: 'Ticket System Log' });
+        
     const messageOptions = { embeds: [embed] };
 
     if (filePath) {

@@ -2,21 +2,17 @@ const fs = require('fs');
 const path = require('path');
 
 const getAllFiles = (directory, foldersOnly = false) => {
-    let fileNames = [];
-
     const files = fs.readdirSync(directory, { withFileTypes: true });
+    let fileNames = [];
+    
     for (const file of files) {
         const filePath = path.join(directory, file.name);
         if (file.isDirectory()) {
-            if (foldersOnly) {
-                fileNames.push(filePath);
-            } else {
-                fileNames = fileNames.concat(getAllFiles(filePath, foldersOnly));
-            }
+            if (foldersOnly) fileNames.push(filePath);
+            else fileNames = fileNames.concat(getAllFiles(filePath, foldersOnly));
+
         } else {
-            if (!foldersOnly) {
-                fileNames.push(filePath);
-            }
+            if (!foldersOnly) fileNames.push(filePath);
         }
     }
 
