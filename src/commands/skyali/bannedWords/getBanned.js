@@ -11,12 +11,17 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
     
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         try {
             const response = await axios.get(apiUrl);
             const words = response.data.map(word => word.word);
-            await interaction.reply(`Banned words: ${words.join(', ')}`);
-        } catch (err) {
+
+            logger.info(interaction, 'Banned words retrieved successfully.',
+                { Amount: response.data.length });
+            await interaction.reply(`Banned words (${words.length}):\n\`\`\`${words.join('\t')}\`\`\``);
+        } catch (error) {
+            logger.error(interaction, 'Error getting banned words', 
+                { Error: error.message });
             await interaction.reply('An error occurred while getting the banned words.');
         }
     }

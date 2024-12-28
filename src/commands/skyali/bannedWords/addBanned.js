@@ -19,13 +19,18 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const word = interaction.options.getString('word');
 
         try {
             const response = await axios.post(apiUrl, { word });
+
+            logger.info(interaction, 'Word added successfully.', 
+                { Word: word });
             await interaction.reply('Word added successfully.');
-        } catch (err) {
+        } catch (error) {
+            logger.error(interaction, 'Error adding word', 
+                { Error: error.message, Word: word });
             await interaction.reply('An error occurred while adding the word.');
         }
     }

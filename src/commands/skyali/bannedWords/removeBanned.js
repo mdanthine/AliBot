@@ -19,13 +19,18 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const word = interaction.options.getString('word');
 
         try {
             const response = await axios.delete(`${apiUrl}/${word}`);
+            
+            logger.info(interaction, 'Word removed successfully.', 
+                { Word: word });
             await interaction.reply('Word removed successfully.');
-        } catch (err) {
+        } catch (error) {
+            logger.error(interaction, 'Error removing word', 
+                { Error: error.message, Word: word });
             await interaction.reply('An error occurred while removing the word.');
         }
     }

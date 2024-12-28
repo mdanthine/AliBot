@@ -19,22 +19,26 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const serverId = interaction.options.getString('id');
 
         try {
             const response = await axios.get(apiUrl);
             const servers = response.data;
-
             const server = servers.find(s => s.id === serverId || s.name === serverId);
 
             if (server) {
-            await interaction.reply(`Server found:\n${JSON.stringify(server, null, 2)}`);
+                logger.info(interaction, 'Server found.', 
+                    { ID: serverId });
+                await interaction.reply(`Server found:\n\`\`\`${JSON.stringify(server, null, 2)}\`\`\``);
             } else {
-            await interaction.reply('Server not found.');
+                logger.warn(interaction, 'Server not found.', 
+                    { ID: serverId });
+                await interaction.reply('Server not found.');
             }
         } catch (error) {
-            console.error(error);
+            logger.error(interaction, 'Error fetching server list', 
+                { Error: error.message, ID: serverId });
             await interaction.reply('An error occurred while fetching the server list.');
         }
     }

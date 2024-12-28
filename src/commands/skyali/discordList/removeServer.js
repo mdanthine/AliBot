@@ -19,15 +19,19 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const id = interaction.options.getString('id');
 
         try {
             const response = await axios.delete(`${apiUrl}/${id}`);
+
+            logger.info(interaction, 'Server removed successfully.', 
+                { ID: id });
             await interaction.reply('Server removed successfully.');
-        } catch (err) {
+        } catch (error) {
+            logger.error(interaction, 'Error removing server', 
+                { Error: error.message, ID: id });
             await interaction.reply('An error occurred while removing the server.');
-            console.log(err);
         }
     }
 }

@@ -59,9 +59,8 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         await interaction.deferReply();
-
 
         const invite = interaction.options.getString('invite');
         const categories = interaction.options.getString('categories').split(',').map(cat => cat.trim());
@@ -69,9 +68,7 @@ module.exports = {
         const keyFeatures = interaction.options.getString('keyfeatures').split(',').map(feature => feature.trim());
 
         try {
-            await interaction.deferReply();
             const discordData = await getDiscordData(invite);
-
             const newServer = {
                 id: discordData.id,
                 invite,
@@ -80,11 +77,14 @@ module.exports = {
                 keyFeatures,
                 discord: discordData,
             };
-
             const response = await axios.post(apiUrl, newServer);
+
+            logger.info(interaction, 'Server added successfully.', 
+                { Server: `\`\`\`${JSON.stringify(newServer, null, 2)}\`\`\``});
             interaction.editReply('Server added to the database successfully!');
         } catch (error) {
-            console.error('Error adding server:', error);
+            logger.error(interaction, 'Error adding server', 
+                { Error: error.message, Link: invite, Categories: categories, Tags: tags, Features: keyFeatures });
             interaction.editReply({ content: 'There was an error adding the server. Please try again later.', ephemeral: true });
         }
     },

@@ -11,12 +11,17 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         try {
             const response = await axios.get(apiUrl);
-            const servers = response.data.map(server => `${server.id} -> ${server.discord.id} ${server.discord.name} ${server.id === server.discord.id}`);
-            await interaction.reply(`Servers: \n${servers.join('\n')}`);
-        } catch (err) {
+            const servers = response.data.map(server => `${server.discord.name}: \`\`\`Link ID {${server.id}} -> Server ID {${server.discord.id}} | Match: ${server.id === server.discord.id}\`\`\``);
+
+            logger.info(interaction, 'Servers retrieved successfully.', 
+                { Amount: response.data.length });    
+            await interaction.reply(`**Servers (${response.data.length}):** \n${servers.join('')}`);
+        } catch (error) {
+            logger.error(interaction, 'Error getting servers', 
+                { Error: error.message });
             await interaction.reply('An error occurred while getting the servers.');
         }
     }

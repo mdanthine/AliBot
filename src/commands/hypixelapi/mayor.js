@@ -5,6 +5,7 @@ const removeFormat = require("../../utils/removeFormat");
 const apiKey = process.env.HYPIXEL_API;
 
 module.exports = {
+    deleted: true,
     name: "mayor",
     description: "Check the current mayor and election candidates",
 

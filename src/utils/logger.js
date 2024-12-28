@@ -9,7 +9,7 @@ const logLevels = {
 };
 
 function createLogger(client) {
-    async function log(level, message, context = {}, interaction = null) {
+    async function log(interaction = null, level, message, context = {}) {
         try {
             const logEntry = {
                 level,
@@ -24,10 +24,10 @@ function createLogger(client) {
             logEntry.channelId = interaction.channel.id ? interaction.channel.id : '';
 
             if (interaction.isCommand()) {
-                if (level === logLevels.INFO) return;
+                // if (level === logLevels.INFO) return;
                 logEntry.logType = 'Command';
             } else if (interaction.isMessageComponent()) {
-                if (level === logLevels.INFO) return;
+                // if (level === logLevels.INFO) return;
                 logEntry.logType = 'Component';
             } else if (interaction.isModalSubmit()) {
                 logEntry.logType = 'Modal';
@@ -41,9 +41,9 @@ function createLogger(client) {
                 .setDescription(message)
                 .setColor(getLogColor(level))
                 .addFields(
-                    { name: 'User', value: `${logEntry.userName} - ${logEntry.userId}`, inline: true },
-                    { name: 'Channel', value: `${logEntry.channelName} - ${logEntry.channelId}`, inline: false },
-                    ...Object.keys(context).map(key => ({ name: key, value: context[key], inline: true }))
+                    ...Object.keys(context).map(key => ({ name: key, value: String(context[key]), inline: false })),
+                    { name: 'User', value: `<@${logEntry.userId}>`, inline: true },
+                    { name: 'Channel', value: `<#${logEntry.channelId}> - ${logEntry.channelName}`, inline: true }
                 )
                 .setTimestamp()
                 .setFooter({ text: 'Alibot log' });
@@ -53,6 +53,7 @@ function createLogger(client) {
                 throw new Error('Log channel not found');
             }
 
+            console.log(`[${level}] ${message}`, context);
             await channel.send({ embeds: [embed] });
         } catch (error) {
             console.error('Failed to send log:', error);
@@ -75,10 +76,10 @@ function createLogger(client) {
     }
 
     return {
-        info: (interaction, message, context) => log(logLevels.INFO, message, context, interaction),
-        warn: (interaction, message, context) => log(logLevels.WARN, message, context, interaction),
-        error: (interaction, message, context) => log(logLevels.ERROR, message, context, interaction),
-        fatal: (interaction, message, context) => log(logLevels.FATAL, message, context, interaction)
+        info: (interaction, message, context) => log(interaction, logLevels.INFO, message, context),
+        warn: (interaction, message, context) => log(interaction, logLevels.WARN, message, context),
+        error: (interaction, message, context) => log(interaction, logLevels.ERROR, message, context),
+        fatal: (interaction, message, context) => log(interaction, logLevels.FATAL, message, context)
     };
 }
 

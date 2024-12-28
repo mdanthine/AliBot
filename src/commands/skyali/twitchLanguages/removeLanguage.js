@@ -25,14 +25,18 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const code = interaction.options.getString('code');
         const name = interaction.options.getString('name');
 
         try {
             const response = await axios.delete(`${apiUrl}/${code}`);
+            logger.info(interaction, 'Language removed successfully.', 
+                { Code: code, Name: name });
             await interaction.reply('Language removed successfully.');
-        } catch (err) {
+        } catch (error) {
+            logger.error(interaction, 'Error removing language', 
+                { Error: error.message, Code: code, Name: name}); 
             await interaction.reply('An error occurred while removing the language.');
         }
     }

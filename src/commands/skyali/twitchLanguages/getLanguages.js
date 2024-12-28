@@ -14,11 +14,14 @@ module.exports = {
     callback: async (client, interaction, logger) => {
         try {
             const response = await axios.get(apiUrl);
-            const languages = response.data.map(language => `${language.code} - ${language.name}`);
-            logger.info(interaction, 'Languages retrieved successfully.');
-            await interaction.reply(`Languages: ${languages.join(', ')}`);
-        } catch (err) {
-            console.log(err)
+            const languages = response.data.map(language => `\`${language.code}\` - ${language.name}`).join('\n');
+
+            logger.info(interaction, 'Languages retrieved successfully.', 
+                { Amount: response.data.length });
+            await interaction.reply(`**Languages (${response.data.length}):**\n${languages}`);
+        } catch (error) {
+            logger.error(interaction, 'Error getting languages', 
+                { Error: error.message });
             await interaction.reply('An error occurred while getting the languages.');
         }
     }

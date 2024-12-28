@@ -6,6 +6,7 @@ const fetchApi = require("../../utils/fetchApi");
 const apiKey = process.env.HYPIXEL_API;
 
 module.exports = {
+    deleted: true,
     name: "status",
     description: "Check the status of a player on Hypixel",
     options: [

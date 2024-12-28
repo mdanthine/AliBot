@@ -1,7 +1,9 @@
 const { ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const createLog = require('../../utils/createLog');
 
 module.exports = {
     id: 'create-report-ticket',
+
     callback: async (client, interaction) => {
         const { guild, user } = interaction;
         const existingTicket = guild.channels.cache.find(channel => channel.name === `ticket-report-${user.username}`);
@@ -47,10 +49,13 @@ module.exports = {
                 components: [row],
             });
 
+            createLog('Report Ticket', `**User**: <@${user.tag}>\n**Ticket Channel**: <#${channel.id}>`, interaction, 'success');
+            await interaction.reply({ content: `Ticket successfully created at <#${channel.id}>`, ephemeral: true });
             
         } catch (error) {
             console.error(`Error creating report ticket channel: ${error}`);
-            interaction.reply({ content: 'There was an error creating the ticket', ephemeral: true});
+            await interaction.reply({ content: 'There was an error creating the ticket', ephemeral: true});
+            createLog('Error', `**Error**: ${error.message}`, interaction, 'error');
         }
     }
 }

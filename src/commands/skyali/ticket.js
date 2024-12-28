@@ -3,6 +3,7 @@ const createLog = require('../../utils/createLog');
 const fetchApi = require('../../utils/fetchApi');
 
 module.exports = {
+    deleted: true,
     testOnly: true,
     name: "ticket",
     description: "Opens a ticket channel",

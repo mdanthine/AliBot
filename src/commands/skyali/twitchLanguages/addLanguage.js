@@ -25,14 +25,19 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         const code = interaction.options.getString('code');
         const name = interaction.options.getString('name');
 
         try {
             const response = await axios.post(apiUrl, { code, name });
+
+            logger.info(interaction, 'Language added successfully.', 
+                { Code: code, Name: name });
             await interaction.reply('Language added successfully.');
-        } catch (err) {
+        } catch (error) {
+            logger.error(interaction, 'Error adding language', 
+                { Error: error.message, Code: code, Name: name });
             await interaction.reply('An error occurred while adding the language.');
         }
     }

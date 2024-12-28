@@ -43,7 +43,7 @@ module.exports = {
     permissionsRequired: [PermissionFlagsBits.Administrator],
     botPermissions: [PermissionFlagsBits.Administrator],
 
-    callback: async (client, interaction) => {
+    callback: async (client, interaction, logger) => {
         await interaction.deferReply();
 
         const discordId = interaction.options.getString('id');
@@ -57,6 +57,7 @@ module.exports = {
             const serverData = serverResponse.data;
 
             if (!serverData || serverData.length === 0) {
+                logger.warn(interaction, 'Server not found.', { discordId });
                 interaction.editReply('Server not found.');
                 return;
             }
@@ -66,10 +67,14 @@ module.exports = {
             if (categories) updateData.categories = categories;
             if (tags) updateData.tags = tags;
             if (keyFeatures) updateData.keyFeatures = keyFeatures;
-
             const response = await axios.put(`${apiUrl}/${serverId}`, updateData);
+
+            logger.info(interaction, 'Server updated successfully.', 
+                { ID: discordId, Data: `\`\`\`${JSON.stringify(updateData, null, 2)}\`\`\`` })
             interaction.editReply('Server updated successfully.');
-        } catch (err) {
+        } catch (error) {
+            logger.error(interaction, 'Error updating server', 
+                { Error: error.message, ID: discordId, Data: `\`\`\`${JSON.stringify(updateData, null, 2)}\`\`\``});
             interaction.editReply('An error occurred while updating the server.');
         }
     }

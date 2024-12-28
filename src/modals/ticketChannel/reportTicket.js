@@ -10,9 +10,9 @@ module.exports = {
 
         await channel.send({
             content: 
-`Hello ${user}, please make sure that the following informations about your issue are correct:
-**Object:** ${reportObject}
-Report: ${reportBug}`,
+                `Hello ${user}, please make sure that the following informations about your issue are correct:\n` +
+                `**Object:** ${reportObject}\n` +
+                `Report: ${reportBug}`,
         });
 
         createLog(`Modal Submitted`, 'Report Modal', interaction, 'create');

@@ -1,14 +1,14 @@
 const { ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const createLog = require('../../utils/createLog');
 
 module.exports = {
     id: 'create-discord-ticket',
+
     callback: async (client, interaction) => {
         const { guild, user } = interaction;
         const existingTicket = guild.channels.cache.find(channel => channel.name === `ticket-discord-${user.username}`);
-        if (existingTicket) {
-            return interaction.reply({ content: 'You already have an open ticket.', ephemeral: true });
-        }
-
+        if (existingTicket) return interaction.reply({ content: 'You already have an open ticket.', ephemeral: true });
+        
         try {
             const channel = await guild.channels.create({
                 name: `ticket-discord-${user.username}`,
@@ -49,11 +49,14 @@ module.exports = {
                 \n - Key features can be anything that defines your server`,
                 components: [row],
             });
-
+            
+            createLog('Discord Ticket', `**User**: <@${user.tag}>\n**Ticket Channel**: <#${channel.id}>`, interaction, 'success');
+            await interaction.reply({ content: `Ticket successfully created at <#${channel.id}>`, ephemeral: true });
             
         } catch (error) {
             console.error(`Error creating discord ticket channel: ${error}`);
-            interaction.reply({ content: 'There was an error creating the ticket', ephemeral: true});
+            await interaction.reply({ content: 'There was an error creating the ticket', ephemeral: true});
+            createLog('Error', `**Error**: ${error.message}`, interaction, 'error');
         }
     }
 }
