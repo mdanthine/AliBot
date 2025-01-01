@@ -14,7 +14,7 @@ module.exports = {
             const channel = await guild.channels.create({
                 name: `ticket-report-${user.username}`,
                 type: ChannelType.GuildText,
-                PermissionOverwrites: [{
+                permissionOverwrites: [{
                         id: guild.id,
                         deny: [PermissionFlagsBits.ViewChannel],
                     }, {
@@ -46,7 +46,7 @@ module.exports = {
                 components: [row],
             });
 
-            createLog(client, 'Report Ticket', `**User**: <@${user.tag}>\n**Ticket Channel**: <#${channel.id}>`, interaction, 'success');
+            createLog(client, 'Report Ticket', '', interaction, 'success');
             await interaction.reply({ 
                 content: `Ticket successfully created at <#${channel.id}>`, 
                 ephemeral: true 
