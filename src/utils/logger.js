@@ -12,23 +12,29 @@ function createLogger(client) {
     async function log(interaction = null, level, message, context = {}) {
         try {
             const logEntry = {level, message, ...context};
+            if (interaction) {
+                logEntry.userId = interaction.user?.id || 'Unknown';
+                logEntry.userName = interaction.user?.tag || 'Unknown';
+                logEntry.channelName = interaction.channel ? interaction.channel.name : 'Unknown';
+                logEntry.channelId = interaction.channel?.id ? interaction.channel.id : '';
 
-            if (!interaction) return
-            logEntry.userId = interaction.user?.id || 'Unknown';
-            logEntry.userName = interaction.user?.tag || 'Unknown';
-            logEntry.channelName = interaction.channel ? interaction.channel.name : 'Unknown';
-            logEntry.channelId = interaction.channel?.id ? interaction.channel.id : '';
-
-            if (interaction.isCommand()) {
-                // if (level === logLevels.INFO) return;
-                logEntry.logType = 'Command';
-            } else if (interaction.isMessageComponent()) {
-                // if (level === logLevels.INFO) return;
-                logEntry.logType = 'Component';
-            } else if (interaction.isModalSubmit()) {
-                logEntry.logType = 'Modal';
+                if (interaction.isCommand()) {
+                    // if (level === logLevels.INFO) return;
+                    logEntry.logType = 'Command';
+                } else if (interaction.isMessageComponent()) {
+                    // if (level === logLevels.INFO) return;
+                    logEntry.logType = 'Component';
+                } else if (interaction.isModalSubmit()) {
+                    logEntry.logType = 'Modal';
+                } else {
+                    logEntry.logType = "Unknown";
+                }
             } else {
-                logEntry.logType = 'Unknown';
+                logEntry.logType = 'Backend';
+                logEntry.userId = 13;
+                logEntry.userName = "Backend";
+                logEntry.channelName = "Backend";
+                logEntry.channelId = "backend";
             }
             
 
@@ -47,7 +53,6 @@ function createLogger(client) {
             const channel = await client.channels.fetch(logChannel);
             if (!channel) throw new Error('Log channel not found');
             
-            console.log(`[${level}] ${message}`, context);
             await channel.send({ embeds: [embed] });
         } catch (error) {
             console.error('Failed to send log:', error);
